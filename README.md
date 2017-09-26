@@ -1,5 +1,5 @@
 # 只需要一行注解，就可以配置mybadis的多数据源
-#这是一个基于spring boot 的mybadis的starter
+### 这是一个基于spring boot 的mybadis的starter
 > 支持多个数据源
 
 使用方法很简单，先定义一些配置文件，放到application.yml中
