@@ -1,16 +1,18 @@
 package com.xiaojiezhu.mybadis.starter;
 
+import com.github.pagehelper.PageInterceptor;
 import com.xiaojiezhu.mybadis.starter.core.DataSourceConfig;
+import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 /**
  * 作者 zxj<br>
@@ -25,13 +27,13 @@ public class MyBadisConfigurationCreator {
         bean.setDataSource(ds);
 
         //分页插件
-/*        PageHelper pageHelper = new PageHelper();
+        PageInterceptor pageHelper = new PageInterceptor();
         Properties properties = new Properties();
-        properties.setProperty("dialect", "mysql");
+        properties.setProperty("helperDialect", "mysql");
         properties.setProperty("reasonable", "false");
         properties.setProperty("pageSizeZero", "true");
-        pageHelper.setProperties(properties);*/
-        //bean.setPlugins(new Interceptor[]{pageHelper});
+        pageHelper.setProperties(properties);
+        bean.setPlugins(new Interceptor[]{pageHelper});
 
         try {
             //指定mapper xml目录

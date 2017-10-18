@@ -70,7 +70,6 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
         }else{
             Object value = annotationBean.entrySet().iterator().next().getValue();
             MyBadisLoader annotation = value.getClass().getAnnotation(MyBadisLoader.class);
-            Annotation[] annotations = value.getClass().getAnnotations();
             String[] loaders = annotation.value();
             mateDatas = new HashSet<LoaderMateData>(loaders.length);
             dataSourceConfigs = new HashSet<DataSourceConfig>(mateDatas.size());
