@@ -8,6 +8,7 @@ package com.xiaojiezhu.mybadis.starter.core;
 public class DataSourceConfig {
     private String dataSourceName;
     private String packageName;
+    private String[] xmlMappingPath;
     private String url;
 
     private String username;
@@ -22,9 +23,10 @@ public class DataSourceConfig {
 
     private int maxActive;
 
-    public DataSourceConfig(String dataSourceName,String packageName,String url, String username, String password, String driverClassName, int initialSize, int minIdle, int maxActive) {
+    public DataSourceConfig(String dataSourceName,String packageName,String[] xmlMappingPath,String url, String username, String password, String driverClassName, int initialSize, int minIdle, int maxActive) {
         this.dataSourceName = dataSourceName;
         this.packageName = packageName;
+        this.xmlMappingPath = xmlMappingPath;
         this.url = url;
         this.username = username;
         this.password = password;
@@ -34,9 +36,12 @@ public class DataSourceConfig {
         this.maxActive = maxActive;
     }
 
-    public DataSourceConfig(String dataSourceName,String packageName,String url, String username, String password, String driverClassName) {
+
+
+    public DataSourceConfig(String dataSourceName,String packageName,String[] xmlMappingPath,String url, String username, String password, String driverClassName) {
         this.dataSourceName = dataSourceName;
         this.packageName = packageName;
+        this.xmlMappingPath = xmlMappingPath;
         this.url = url;
         this.username = username;
         this.password = password;
@@ -44,6 +49,14 @@ public class DataSourceConfig {
     }
 
     public DataSourceConfig() {
+    }
+
+    public String[] getXmlMappingPath() {
+        return xmlMappingPath;
+    }
+
+    public void setXmlMappingPath(String[] xmlMappingPath) {
+        this.xmlMappingPath = xmlMappingPath;
     }
 
     public String getUrl() {

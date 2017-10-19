@@ -27,7 +27,8 @@ mysql:
 
 使用方法如下
 ```java
-@MyBadisLoader({"saas : com.llc.admin.web.dao.saas" , "saas2 : com.llc.admin.web.dao.saas2"})
+@MyBadisLoader({"saas = com.llc.admin.web.dao.saas = classpath:mapper/*xml" , 
+                "saas2 = com.llc.admin.web.dao.saas2 = classpath:mapper/*.xml,classpath:mapper/user/*.xml"})
 @SpringBootApplication
 public class WebApplication {
 
@@ -36,5 +37,5 @@ public class WebApplication {
     }
 }
 ```
-> 上面的注解中 saas是上方配置文件，数据源的名称，冒号后面的是分号
+> 上面的注解中 saas是上方配置文件，数据源的名称，后面是扫描的接口包名，可以用逗号分隔传入多个，再后面是扫描xml的配置文件路径，也支持多个
 > 注解中接收的是一个数组，所以支持多个数据源，除此不需要任何代码就可以使用

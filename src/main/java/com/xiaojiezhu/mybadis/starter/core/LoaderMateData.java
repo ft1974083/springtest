@@ -12,16 +12,21 @@ public class LoaderMateData {
      */
     private String dataSourceName;
     /**
-     * 包名
+     * 接口包名，spring boot在本工程中可不配置
      */
     private String packageName;
+    /**
+     * mapping配置文件的位置
+     */
+    private String[] mappingPath;
 
     public LoaderMateData() {
     }
 
-    public LoaderMateData(String dataSourceName, String packageName) {
+    public LoaderMateData(String dataSourceName, String packageName, String[] mappingPath) {
         this.dataSourceName = dataSourceName;
         this.packageName = packageName;
+        this.mappingPath = mappingPath;
     }
 
     public String getDataSourceName() {
@@ -32,9 +37,18 @@ public class LoaderMateData {
         this.dataSourceName = dataSourceName;
     }
 
+    public String[] getMappingPath() {
+        return mappingPath;
+    }
+
+    public void setMappingPath(String[] mappingPath) {
+        this.mappingPath = mappingPath;
+    }
+
     public String getPackageName() {
         return packageName;
     }
+
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;

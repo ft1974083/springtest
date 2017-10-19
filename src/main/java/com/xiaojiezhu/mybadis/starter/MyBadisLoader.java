@@ -18,8 +18,8 @@ public @interface MyBadisLoader {
 
     /**
      * 对应所有的数据源<br>
-     * 示例如下:    dataSourceName : packageNae                 数据源名 : 包名<br>
-     * 如: saas : com.xxx.dao       就意味着saas的数据源，全部在com.xxx.dao这个包下
+     * 示例如下:    dataSourceName : packageNae : mappnigPath                 数据源名 : 包名 : mapping文件路件<br>
+     * 如: saas : com.xxx.dao : classpath:mapper/*.xml,classpath:mapper/user/*.xml,      就意味着saas的数据源，全部在com.xxx.dao这个包下，会到classpath/mapper和 classpath/mapper/user下查找xml映射
      * @return
      */
     String[] value();

@@ -75,11 +75,15 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
             dataSourceConfigs = new HashSet<DataSourceConfig>(mateDatas.size());
 
             for(String loader : loaders){
-                String[] split = loader.split(":");
-                if(split.length != 2){
-                    throw new RuntimeException(MyBadisLoader.class + " 注解的值不合法:" + loader);
+                String[] split = loader.split("=");
+                if(split.length != 3){
+                    throw new RuntimeException(MyBadisLoader.class + " 注解的值不合法:" + loader + "   示例    saas : com.xxx.dao : classpath:/mapper/*.xml");
                 }else{
-                    mateDatas.add(new LoaderMateData(split[0].trim(),split[1].trim()));
+                    String[] xmlMappingPath = split[2].split(",");
+                    for(int i = 0 ; i < xmlMappingPath.length ; i ++){
+                        xmlMappingPath[i] = xmlMappingPath[i].trim();
+                    }
+                    mateDatas.add(new LoaderMateData(split[0].trim(),split[1].trim(),xmlMappingPath));
                 }
             }
             LOG.debug("mybadis元数据加载完成:" + mateDatas);
@@ -92,7 +96,7 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
             DataSource dataSource = createDataSource(config);
             registerBean(registry,config.getDataSourceName(), DataSourceBeanFactory.class,new Object[]{dataSource});
 
-            SqlSessionFactory sqlSessionFactory = myBadisConfigurationCreator.createSqlSessionFactory(dataSource);
+            SqlSessionFactory sqlSessionFactory = myBadisConfigurationCreator.createSqlSessionFactory(dataSource,config.getXmlMappingPath());
             registerBean(registry,myBadisConfigurationCreator.createSqlSessionFactoryBeanName(config.getDataSourceName()), SqlSessionFactoryBeanFactory.class,new Object[]{sqlSessionFactory});
 
             try {
@@ -144,7 +148,7 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
             String initialSize = environment.getProperty("mysql.server." + mateData.getDataSourceName() + ".initialSize");
             String minIdle = environment.getProperty("mysql.server." + mateData.getDataSourceName() + ".minIdle");
             String maxActive = environment.getProperty("mysql.server." + mateData.getDataSourceName() + ".maxActive");
-            DataSourceConfig config = new DataSourceConfig(mateData.getDataSourceName(),mateData.getPackageName(),url, username, password, driverClassName);
+            DataSourceConfig config = new DataSourceConfig(mateData.getDataSourceName(),mateData.getPackageName(),mateData.getMappingPath(),url, username, password, driverClassName);
             if(initialSize != null){
                 config.setInitialSize(Integer.parseInt(initialSize));
             }

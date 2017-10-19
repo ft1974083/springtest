@@ -8,10 +8,15 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.sql.DataSource;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -22,7 +27,7 @@ import java.util.Properties;
 public class MyBadisConfigurationCreator {
     public final static Logger LOG = LoggerFactory.getLogger(MyBadisConfigurationCreator.class);
 
-    public SqlSessionFactory createSqlSessionFactory(DataSource ds) {
+    public SqlSessionFactory createSqlSessionFactory(DataSource ds,String[] resourcePaths) {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(ds);
 
@@ -38,7 +43,15 @@ public class MyBadisConfigurationCreator {
         try {
             //指定mapper xml目录
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            bean.setMapperLocations(resolver.getResources("classpath:mapper/*.xml"));
+            List<Resource> resources = new ArrayList<>();
+            for(String resourcePath : resourcePaths){
+                Resource[] resourceArray = resolver.getResources(resourcePath);
+                for(Resource resource : resourceArray){
+                    resources.add(resource);
+                }
+            }
+
+            bean.setMapperLocations(resources.toArray(new Resource[resources.size()]));
             //设置配置项
             org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
             //自动把下划线转成驼峰
