@@ -2,6 +2,7 @@ package com.xiaojiezhu.mybadis.starter;
 
 import com.github.pagehelper.PageInterceptor;
 import com.xiaojiezhu.mybadis.starter.core.DataSourceConfig;
+import org.apache.ibatis.logging.slf4j.Slf4jImpl;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -56,6 +57,7 @@ public class MyBadisConfigurationCreator {
             org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
             //自动把下划线转成驼峰
             configuration.setMapUnderscoreToCamelCase(true);
+            configuration.setLogImpl(Slf4jImpl.class);
             bean.setConfiguration(configuration);
             return bean.getObject();
         } catch (Exception e) {
