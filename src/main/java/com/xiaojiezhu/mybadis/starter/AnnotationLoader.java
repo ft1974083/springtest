@@ -2,10 +2,10 @@ package com.xiaojiezhu.mybadis.starter;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.xiaojiezhu.mybadis.starter.beanfactory.DataSourceBeanFactory;
-import com.xiaojiezhu.mybadis.starter.beanfactory.MapperScannerConfigurerBeanFactory;
 import com.xiaojiezhu.mybadis.starter.beanfactory.SqlSessionFactoryBeanFactory;
 import com.xiaojiezhu.mybadis.starter.core.DataSourceConfig;
 import com.xiaojiezhu.mybadis.starter.core.LoaderMateData;
+import com.xiaojiezhu.mybadis.starter.plugins.DataSourceProxyFactory;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
@@ -25,7 +25,6 @@ import org.springframework.context.annotation.ScopeMetadataResolver;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +46,10 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
 
     private Environment env;
     private Set<DataSourceConfig> dataSourceConfigs;
+    /**
+     * 数据源创建的代理插件
+     */
+    private DataSourceProxyFactory dataSourceProxyFactory;
 
 
 
@@ -54,6 +57,7 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
         env = context.getBean(Environment.class);
+        this.dataSourceProxyFactory = context.getBean(DataSourceProxyFactory.class);
         loaderMateData();
         loadProperties(env);
     }
@@ -177,7 +181,13 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
         if(config.getMaxActive() != 0){
             ds.setMaxActive(config.getMaxActive());
         }
-        return ds;
+        if(this.dataSourceProxyFactory != null){
+            //创建代理数据源
+            DataSource dataSource = this.dataSourceProxyFactory.buildDataSource(ds);
+            return dataSource;
+        }else{
+            return ds;
+        }
     }
 
 
