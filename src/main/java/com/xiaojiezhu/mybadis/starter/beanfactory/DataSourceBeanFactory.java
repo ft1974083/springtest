@@ -5,9 +5,9 @@ import org.springframework.beans.factory.FactoryBean;
 import javax.sql.DataSource;
 
 /**
- * 作者 zxj<br>
  * 时间 2017/9/26 19:51
  * 说明 ...
+ * @author zxj
  */
 public class DataSourceBeanFactory implements FactoryBean<DataSource>{
     private DataSource ds;

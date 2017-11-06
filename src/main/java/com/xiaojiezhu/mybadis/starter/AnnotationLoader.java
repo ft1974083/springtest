@@ -6,6 +6,8 @@ import com.xiaojiezhu.mybadis.starter.beanfactory.SqlSessionFactoryBeanFactory;
 import com.xiaojiezhu.mybadis.starter.core.DataSourceConfig;
 import com.xiaojiezhu.mybadis.starter.core.LoaderMateData;
 import com.xiaojiezhu.mybadis.starter.plugins.DataSourceProxyFactory;
+import com.xiaojiezhu.mybadis.starter.register.BeanRegister;
+import com.xiaojiezhu.mybadis.starter.register.DefaultBeanRegister;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.ScopeMetadataResolver;
 import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +60,11 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         context = applicationContext;
         env = context.getBean(Environment.class);
-        this.dataSourceProxyFactory = context.getBean(DataSourceProxyFactory.class);
+        try{
+            this.dataSourceProxyFactory = context.getBean(DataSourceProxyFactory.class);
+        }catch (Exception e){
+
+        }
         loaderMateData();
         loadProperties(env);
     }
@@ -98,7 +105,15 @@ public class AnnotationLoader implements ApplicationContextAware,BeanDefinitionR
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         for(DataSourceConfig config : dataSourceConfigs){
             DataSource dataSource = createDataSource(config);
-            registerBean(registry,config.getDataSourceName(), DataSourceBeanFactory.class,new Object[]{dataSource});
+            BeanRegister beanRegister = new DefaultBeanRegister(registry);
+            try {
+                beanRegister.register(dataSource,config.getDataSourceName());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(0);
+            }
+
+            //registerBean(registry,config.getDataSourceName(), DataSourceBeanFactory.class,new Object[]{dataSource});
 
             SqlSessionFactory sqlSessionFactory = myBadisConfigurationCreator.createSqlSessionFactory(dataSource,config.getXmlMappingPath());
             registerBean(registry,myBadisConfigurationCreator.createSqlSessionFactoryBeanName(config.getDataSourceName()), SqlSessionFactoryBeanFactory.class,new Object[]{sqlSessionFactory});
